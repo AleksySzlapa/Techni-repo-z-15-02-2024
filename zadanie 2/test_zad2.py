@@ -1,44 +1,40 @@
-import unittest
-from zad2 import serialize_student_data
+from unittest import TestCase
+import datetime as dt
+from zad2 import serialize
 
+class Test(TestCase):
+    def test_normal_serialization(self):
+        #Given
+        id = 1
+        first_name = "Jan"
+        last_name = "Kowal"
+        email = "Jan_Kowal32@gmail.com"
+        birth_day = dt.datetime.now()
+        expected = '{"id": "1", "first_name": "Jan", "last_name": "Kowal", "email": "Jan_Kowal32@gmail.com", "birth_day": "2024-02-29"}'
+        #When
+        result = serialize(id, first_name, last_name, email, birth_day)
+        #Then
+        self.assertEqual(expected, result)
+    def test_missing_required_field(self):
+        #Given
+        id = 1
+        first_name = "Jan"
+        last_name = "Kowal"
+        birth_day = dt.datetime.now()
+        expected = None
+        #When
+        with self.assertRaises(ValueError):
+            # Then
+            serialize(id=id, first_name=first_name, last_name=last_name, mail= None, birth_day = birth_day)
 
-class TestSerializeStudentData(unittest.TestCase):
-    def test_serialize_student_data(self):
-        # Test case when data is given correctly
-        student_data = {
-            "id": 1,
-            "first_name": "Jan",
-            "last_name": "Kowalski",
-            "email": "jan.kowalski@example.com",
-            "birth_date": "2000-01-01"
-        }
-        expected_serialized_data = {
-            'id': 1,
-            'first_name': 'Jan',
-            'last_name': 'Kowalski',
-            'email': 'jan.kowalski@example.com',
-            'birth_date': '2000-01-01'
-        }
-
-        serialized_data = serialize_student_data(student_data)
-
-        self.assertEqual(serialized_data, expected_serialized_data)
-
-    def test_serialize_student_data_missing_fields(self):
-        # Test case when one element is missing
-        student_data = {
-            "id": 1,
-            "first_name": "Jan",
-            "last_name": "Kowalski",
-            # Missing 'email' field
-            "birth_date": "2000-01-01"
-        }
-        expected_error_message = "{'email': ['Missing data for required field.']}"
-
-        serialized_data = serialize_student_data(student_data)
-
-        self.assertEqual(serialized_data, expected_error_message)
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_wrong_data_types(self):
+        # Given
+        id = 1
+        first_name = "Jan"
+        last_name = "Kowal"
+        emial = 5
+        birth_day = dt.datetime.now()
+        # When
+        with self.assertRaises(TypeError):
+            # Then
+            serialize(id, first_name, last_name, emial, birth_day)

@@ -1,17 +1,18 @@
 
-from marshmallow import Schema, fields, ValidationError
+import datetime as dt
+from marshmallow import Schema, fields
+
 
 class StudentSchema(Schema):
-    id = fields.Int(dump_only=True)
+    id = fields.UUID(required=True)
     first_name = fields.Str(required=True)
     last_name = fields.Str(required=True)
-    email = fields.Email(required=True)
-    birth_date = fields.Date(format='%Y-%m-%d', required=True)
+    email = fields.Str(required=True)
+    birth_day = fields.Date(required=True)
 
-def serialize_student_data(student_data):
+
+def serialize(id, first_name, last_name, mail, birth_day):
+    student = {"id": id, "first_name" : first_name, "last_name": last_name, "email": mail, "birth_day":birth_day}
     schema = StudentSchema()
-    try:
-        serialized_data = schema.dump(student_data)
-        return serialized_data
-    except ValidationError as e:
-        return str(e)
+    result = schema.dumps(student)
+    return result
